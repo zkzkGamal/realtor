@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RealTor chat</title>
+    <link rel="icon" href="{%static 'login/images/icon.png' %}" />
+
+    <!-- css  -->
+    <link rel="stylesheet" href="{%static 'login/css/chat-admin.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        
+        <!-- ========= left side ========== -->
+        <div class="left-side">
+            <div class="header">
+                <a href="{%url 'profile-user'%}"><div class="user-imgBx">
+                    <img src="{{profile.picture.url}}" alt=""> 
+                    <p style="padding: 15px 50px;
+                    position: fixed; color: blanchedalmond;">{{profile.f_name}} {{profile.L_name}}</p>
+                </div></a>
+
+                <ul class="nav-icons">
+                    <li>
+                        <ion-icon name="scan-circle-outline"></ion-icon>
+                    </li>
+                    <li>
+                        <ion-icon name="chatbox"></ion-icon>
+                    </li>
+                    <li>
+                        <ion-icon name="ellipsis-vertical"></ion-icon>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="search-chat">
+                <input type="text" placeholder="Search or start new chat">
+                <ion-icon name="search-outline"></ion-icon>
+            </div>
+
+            <div class="chat-list">
+                {%for sd in senders%}
+                {%if sd.f_name == profile.f_name%}
+                {%else%}
+                <a href="{%url 'chat_message_seller_mes' sd.id sd.f_name %}">
+                    <div class="chat active">
+                        <div class="imgBx">
+                            <img src="{{sd.picture.url}}" alt="">
+                        </div>
+
+                        <div class="details">
+                            <div class="head">
+                                <h4 class="name">{{sd}}</h4>
+                                <!-- <span class="time">10:57</span> -->
+                            </div>
+
+                            <div class="msgs">
+                                <p class="msg">
+                                    {{sd.user.email}}
+                                </p>
+                                <b class="num"></b>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                {%endif%}
+                {%endfor%}
+            </div>
+        </div>
+
+        <!-- ========= right side ========== -->
+        <div class="right-side">
+            <div class="gray-box">
+                <div class="img-con">
+                    <img class="back" src="{%static 'login/images/logo.png' %}" alt="">
+                </div><br>
+                <div class="text">
+                    <h1>wait to choose chat!!! </h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- icons -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>

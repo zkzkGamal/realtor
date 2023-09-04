@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RealTor chat</title>
+
+    <!-- css  -->
+    <link rel="stylesheet" href="{%static 'login/css/chat-user.css' %}" />
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- ========= left side ========== -->
+      <div class="left-side">
+        <div class="header">
+          <div class="user-imgBx"></div>
+
+          <ul class="nav-icons">
+            <a href="{%url 'home' %}"><img src="{%static 'login/images/logo.png' %}" alt="" /></a>
+          </ul>
+        </div>
+
+        <div class="chat-list">
+          <img
+            class="img-admin"
+            src="{%static 'login/images//customer-support-or-customer-service-agent-with-headset-flat-icon-designs-free-vector.jpg' %}"
+            alt=""
+          />
+          {%if user.is_superuser %}
+          <p class="admin-word">wating for admin</p>
+          {%else%}
+          <p class="admin-word">wating for user</p>
+          {%endif%}
+        </div>
+      </div>
+
+      <!-- ========= right side ========== -->
+      <div class="right-side">
+        <div class="header">
+          <div class="user-details">
+            <div class="user-imgBx"></div>
+
+            <h4>
+              {{name}} <br />
+              <span>{{status}}</span>
+            </h4>
+          </div>
+
+          <ul class="nav-icons">
+            <li>
+              <ion-icon name="search-outline"></ion-icon>
+            </li>
+            <li>
+              <ion-icon name="ellipsis-vertical"></ion-icon>
+            </li>
+          </ul>
+        </div>
+
+        <div class="chatBx" id="chatBx">
+          {%for msg in messages%}
+          {%if msg.sender == profile %}
+          <div class="msg msg-me" id="msg-me">
+            <p>
+              {{msg.message}} <br />
+              <span>{{msg.time_stamp|time:'H:i'}}</span>
+            </p>
+          </div>
+          {%else%}
+          <div class="msg msg-frnd" id="msg-frnd">
+            <p>
+              {{msg.message}}<br />
+              <span>{{msg.time_stamp|time:'H:i'}}</span>
+            </p>
+          </div>
+          {%endif%}
+          {%endfor%}
+        </div>
+        <form action="" id="form">
+        <div class="chat-input">
+          <ion-icon name="happy-outline"></ion-icon>
+          <ion-icon name="attach-outline"></ion-icon>
+          <input type="text" placeholder="Type a messsage"  name="message"/>
+          <input type="submit" value="send" class="send">
+        </div>
+      </form>
+
+      </div>
+    </div>
+
+    <!-- icons -->
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
+
+    <script>
+      // chat.js
+          const chatSocket = new WebSocket(
+              'ws://' + window.location.host +
+              '/ws/chat/' + '{{profile.id}}' + '/'
+          );
+          const now = new Date();
+          const hours = now.getHours();
+          const minutes = now.getMinutes();
+          console.log(`The time is ${hours}:${minutes}`)
+          let msg_box = document.getElementById('chatBx')
+
+          chatSocket.onmessage = function (e) {
+              const data = JSON.parse(e.data);
+              const message = data.message;
+              
+              // Handle the received message and update the UI
+                if ('{{profile.f_name}}' == data.sender_name){
+                  console.log('lol')
+                  msg_box.insertAdjacentHTML('beforeEnd',`<div class ="msg msg-me"><p> ${message} <br>
+                    <span>${hours}:${minutes}</span>
+                    </p> </div>`)
+                }else{
+                  console.log('bool')
+                  msg_box.insertAdjacentHTML('beforeend',`<div class ="msg msg-frnd"><p> ${message} <br>
+                    <span>${hours}:${minutes}</span>
+                    </p> </div>`)
+                }
+          };
+
+          chatSocket.onclose = function (e) {
+              // Handle the connection closing
+          };
+
+          // Sending a message 
+          // not done yet tommorw i will handle user in and out data
+          let form = document.getElementById('form')
+          form.addEventListener('submit', (e)=> {
+              e.preventDefault()
+              message = e.target.message.value
+              chatSocket.send(JSON.stringify({
+                  'message': message , 
+                  'reciver_name': '{{name}}' , 
+                  'reciver_id':'{{id}}' ,
+                  'sender_name' : '{{profile.f_name}}' , 
+                  'sender_id' : '{{profile.id}}'
+              }));
+              form.reset()
+          });
+
+    </script>
+  </body>
+</html>

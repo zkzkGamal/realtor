@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House</title>
+    <link rel="stylesheet" href="{%static 'login/css/aprtment-informaton.css' %}">
+    <link rel="icon" href="{%static 'login/images/icon.png' %}" />
+ 
+</head>
+<body>
+    <div class="header">
+        <div class="head">
+            <div class="header content">
+              <div class="logo">
+                <div class="logo-icon">
+                  <a href="{%url 'home' %}"><img src="{%static 'login/images/logo.png' %}" alt="" /></a>
+                </div>
+                <h3></h3>
+              </div>
+              <div class="links">
+                <ul class="pos">
+                  <li class="activated">
+                    <a href="{%url 'home' %}">Home</a>
+                  </li>
+                  <li>
+                    <a href="#ourservice">Services</a>
+                  </li>
+                  <li>
+                    <a href="{%url 'add-product' %}">upload</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'contact' %}">ContactUS</a>
+                  </li>
+                </ul>
+              </div>
+              {%if user.is_authenticated%}
+              <div class="sign-btns">
+                <a href="{%url 'profile-user' %}">
+                  <div class="sign-in ogbtn">
+                    profile
+                  </div>
+                </a>
+                <a href="{% url 'logout' %}" >
+                  <div class="sign-up ogbtn" >
+                    logout
+                  </div>
+                </a>
+              </div>
+              {%else%}
+              <div class="sign-btns">
+                <a href="{% url 'sign' %}">
+                  <div class="sign-in ogbtn">
+                    sign
+                  </div>
+                </a>
+              </div>
+              {%endif%}
+            </div>
+          </div>
+        <div class="header-content">
+            <div class="header-content-img"><div class="img-big"><img class="img-big" src="{{detail.pics.url}}" alt=""></div></div>
+            <div class="header-content-cont">
+                <div class="details">
+                    <P>{{detail.price}}EGP</P>
+                    <p>{{detail.area}} SQM</p>
+                    <p>{{detail.location}}, Matrouh</p>
+                </div>
+                <div class="owner">
+                    <div class="owner-cont">
+                        <div class="owner-img"><img class="owner-img" src="{{detail.profile_user.picture.url}}" alt=""></div>
+                        <div class="owner-name">{{detail.profile_user.f_name}} {{detail.profile_user.L_name}}</div>
+                    </div>
+                    <a href="{% url 'chat_message' detail.profile_user.id detail.profile_user.f_name%}" class="chat">Chat with seller</a>
+                </div>
+            </div>
+        </div>
+        <div class="header-imgs">
+            <img class="im" src="{{detail.pics.url}}" alt="">
+            <div class="header-google-map" id="googleMap"></div>
+        </div>
+    </header>
+      <div class="bordar" style="width: 90%;">
+        <div class="pay"><a href="{%url 'pay'%}"><button class="button-19" role="button">buy Now</button></a></div>
+        <table>
+            <caption class = "table_title">Details</caption>
+            
+                <tr><td class="type">Type</td>                       <td class="c2">{{detail.type_house}}</td>  <td class="type">Compound</td>         <td class="c2">{{rs3.location}}</td> </tr>
+                <tr> <td class="type">Price</td>                     <td class="c2">{{detail.price}}</td>        <td class="type">Price Type</td>       <td class="c2">{{rs3.price}}Cash</td> </tr>
+                <tr> <td class="type">Area</td>                      <td class="c2">{{detail.area}}M</td>              <td class="type">Bedrooms</td>         <td class="c2">{{rs3.num_of_bedrooms}}</td> </tr>
+                <tr> <td class="type">Bathrooms</td>                 <td class="c2">{{detail.number_bathroom}}</td>                 <td class="type">Furnished</td>        <td class="c2">Yes</td> </tr>
+                <tr> <td class="type">Payment Option</td>            <td class="c2">Cash</td>              <td class="type">Delivery Term</td>    <td class="c2">Finished</td> </tr>
+                <tr> <td class="type">Video</td>                     <td class="c2">Not Available</td>     <td class="type">Virtual Tour</td>     <td class="c2">Not Available</td> </tr>
+                
+        </table>
+    
+        <hr class="hr1">
+    
+        <h2 class="des">Description</h2>
+        <P class="des_p">{{detail.Description}}</P>
+        <h3 class="summary">summary</h3>
+        <ul class="ul1">
+            <li>Main Location: {{detail.location}}</li>
+            <li>Built Up Area: {{detail.area}}M.</li>
+            <li>{{detail.number_bedroom}} Master Bedrooms.</li>
+        </ul>
+        <p class="ul1_p">Fully furnished</p>
+    
+        <h3 class="f">Finance</h3>
+        <p class="f_p">price: {{detail.price}} EGP</p>
+    </div>
+    
+
+    <script>
+        function myMap() {
+        var mapProp= {
+          center:new google.maps.LatLng(51.508742,-0.120850),
+          zoom:10,
+        };
+        var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+        }
+        </script>
+        
+        <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=myMap"></script>
+</body>
+</html>
