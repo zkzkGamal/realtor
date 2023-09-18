@@ -47,7 +47,9 @@ def sign(request):
 def logout_user(request):
     logout(request)
     return redirect('home')
+
 #DONE   profile page
+
 @login_required(login_url = 'sign')
 @adminORuser
 def profile_user(request):
