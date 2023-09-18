@@ -5,6 +5,7 @@ from django.contrib.auth.models import User , Group
 from .models import *
 from .decorators import *
 from .filters import *
+from django.db.models import Q
 # Create your views here.
 #DONE
 def home(request):
@@ -224,7 +225,7 @@ def check_message_seller(request):
     senders = list(set(senders))
     return render(request , 'chat-admin.html' , {'senders':senders , 'profile':profile_user})
 
-from django.db.models import Q
+
 @login_required(login_url='sign')
 def check_message_seller_mes(request , pk , name):
     user = request.user
