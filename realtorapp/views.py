@@ -41,7 +41,7 @@ def sign(request):
             if user:
                 profile_user.save()
                 group = Group.objects.get(name = 'user')
-                profile_user.groups.add(group)
+                user.groups.add(group)
                 login( request , user)
                 return redirect('home')
     return render(request , 'login.html')
