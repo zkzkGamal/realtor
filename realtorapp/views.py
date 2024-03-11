@@ -95,7 +95,7 @@ def add_product(request):
         sell_for = request.POST.get('sell_for')
         sell_option = request.POST.get('sell_option')
         pics = request.FILES.getlist('image')
-        new_product = product(profile_user = profile_user , name = name , Description = Description , location = location ,
+        new_product = product(user = request.user , name = name , Description = Description , location = location ,
                               type_house = type_house , style_house = style_house , 
                               area = area , price = price , number_bathroom = number_bathroom , 
                               number_bedroom = number_bedroom , number_kitchen = number_kitchen , 
