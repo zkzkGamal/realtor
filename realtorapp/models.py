@@ -12,7 +12,7 @@ class profile(models.Model):
     address = models.CharField(max_length=80 , null=True , blank=True)
     f_name = models.CharField(max_length=10 , null=True , blank=True)
     L_name = models.CharField(max_length=10 , null=True , blank=True)
-    picture = models.FileField(upload_to='media',null=True, blank=True)
+    picture = models.FileField(upload_to='media',null=True, blank=True , default='static/login/images/user/0.jpg')
     country = models.TextField(choices=countrys , null=True , blank=True)
     status = models.CharField(default='offline' , max_length=10)
     def __str__(self):
@@ -20,6 +20,18 @@ class profile(models.Model):
             return str(self.f_name + self.L_name)
         else:
             return str(self.user.username)
+    def save(self , *args , **kwargs):
+        if not self.f_name:
+            name = self.user.username 
+            has_name = profile.objects.filter(f_name=name).exists()
+            count = 1
+            while has_name:
+                count += 1
+                name = self.user.username + '-' + str(count)
+                has_name = profile.objects.filter(f_name=name).exists()
+
+            self.f_name = name
+        super().save(*args , **kwargs)
 class product(models.Model):
     av_location = [('nasrcity','nasrcity') , ('madity','madity'),
                    ('elshrouk','elshrouk') , ('Giza','Giza'),
@@ -67,7 +79,8 @@ class saved_message(models.Model):
     time_stamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str('sender : ' + self.sender.f_name + ' ' + self.sender.L_name
-                   + ' reciver : ' + self.reciver.f_name + ' ' + self.reciver.L_name )
+
+        return str('sender : ' + self.sender.user.username
+                   + ' reciver : ' + self.reciver.user.username )
 
 
