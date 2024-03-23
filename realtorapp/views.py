@@ -95,16 +95,17 @@ def add_product(request):
         sell_for = request.POST.get('sell_for')
         sell_option = request.POST.get('sell_option')
         pics = request.FILES.getlist('image')
-        new_product = product(user = request.user , name = name , Description = Description , location = location ,
+        new_product = product(profile_user = profile_user , name = name , Description = Description , location = location ,
                               type_house = type_house , style_house = style_house , 
                               area = area , price = price , number_bathroom = number_bathroom , 
                               number_bedroom = number_bedroom , number_kitchen = number_kitchen , 
-                              sell_type = sell_option , house_for = sell_for , pics = pics)
+                              sell_type = sell_option , house_for = sell_for , pics = pics[0])
     
         if pics:
+            user = request.user
             new_product.save()
             group = Group.objects.get(name = 'seller')
-            profile_user.groups.add(group)
+            user.groups.add(group)
             Product = product.objects.get(profile_user = profile_user , name = name)
             for pic in pics:
                 produc_image = produc_images.objects.create(Product =Product , img = pic)
@@ -208,12 +209,18 @@ def contactus(request):
 @login_required(login_url='sign')
 def check_message(request , pk , name):
     user = request.user
-    profile_user = profile.objects.get(user = user)
-    recevier = profile.objects.get(f_name = name , id = pk).status
-    messagess = saved_message.objects.filter(Q(reciver = profile_user) | Q(sender = profile_user)).order_by('time_stamp')
-    context = {'name':name , 'id': pk,'messages': messagess , 
-               'profile': profile_user , 'status':recevier}
-    return render(request ,'chat-user.html' , context)
+    profile_user = profile.objects.filter(user = user)
+    if profile_user:
+        profile_user = profile_user.first()
+        recevier = profile.objects.get(f_name = name , id = pk)
+        if profile_user.user.username == recevier.user.username:
+            return redirect('home')
+        messagess = saved_message.objects.filter(Q(reciver = profile_user) | Q(sender = profile_user)).order_by('time_stamp')
+        context = {'name':name , 'id': pk,'messages': messagess , 
+                'profile': profile_user , 'status':recevier.status}
+        return render(request ,'chat-user.html' , context)
+    else:
+        return redirect('home')
 
 @login_required(login_url='sign')
 def check_message_seller(request):
