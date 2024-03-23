@@ -12,10 +12,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def save_message(self , sender_name , sender_id , reciver_name , reciver_id , message):
-        sender = profile.objects.get(id = sender_id , f_name = sender_name)
+        sender = profile.objects.filter(id = sender_id , user__username = sender_name)
         reciver = profile.objects.get(id = reciver_id , f_name = reciver_name)
         chat_mesage = saved_message(
-            sender = sender,
+            sender = sender.first(),
             reciver = reciver ,
             message = message , 
             time_stamp = datetime.now()
